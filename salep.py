@@ -29,7 +29,9 @@ async def döviz(ctx, currency: str):
 
 @salep.listen("on_message")
 async def schtupid(message):
-    
+    if message.author.id == salep.user.id:
+        return
+
     if re.search("(z|Z)oom", message.clean_content):
         await message.channel.send("Zoom is schtupid!!!1")
 
