@@ -2,7 +2,6 @@ import doviz_api
 import discord
 from discord.ext import commands
 import logging
-import re
 
 API_KEY = ""
 
@@ -26,14 +25,6 @@ async def döviz(ctx, currency: str):
         return
     
     await ctx.send(f"1 {currency_abbr} = {exchange_rate} {doviz_api.base_currency}")
-
-@salep.listen("on_message")
-async def schtupid(message):
-    if message.author.id == salep.user.id:
-        return
-
-    if re.search("(z|Z)oom", message.clean_content):
-        await message.channel.send("Zoom is schtupid!!!1")
 
 if __name__ == "__main__":
     token_file = open("TOKEN", "r")
