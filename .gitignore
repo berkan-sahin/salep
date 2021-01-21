@@ -1,6 +1,6 @@
 TOKEN
 .vscode/
-
+.pid
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
