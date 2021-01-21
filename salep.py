@@ -9,6 +9,7 @@ from pymongo import MongoClient
 from typing import Union
 import logging
 from random import choice
+import os
 
 # This is the API key for the exchange rate service
 # It will be read from the TOKEN file
@@ -27,12 +28,16 @@ async def on_ready():
     logging.info(salep.user.id)
     logging.info('------')
 
+    # Add presence
+    webpage = discord.Game("https://bsahin.xyz/proj/salep/")
+    await salep.change_presence(activity=webpage)
+
 @salep.command()
-async def döviz(ctx, currency: str):
+async def döviz(ctx: commands.Context, currency: str):
     """Reports the current exchange rate between a user-specified currency and the Turkish Lira
     
     Args:
-        ctx (discord.Context): Invocation context, provided by discord.py on function call
+        ctx (commands.Context): Invocation context, provided by discord.py on function call
         currency (str): The name or the three-letter code for the desired currency
     """    
 
@@ -51,12 +56,12 @@ def extract_id(name: Union[discord.Member, str]):
     return name.lower() if type(name) == str else name.id
 
 @salep.command()
-async def add_quote(ctx, name: Union[discord.Member, str], *, quote: str):
+async def add_quote(ctx: commands.Context, name: Union[discord.Member, str], quote: str):
     """Adds a quote to the corresponding entry for the mentioned person and creates said entry
     if the person doesn't exist
 
     Args:
-        ctx (discord.Context): Invocation context, passed by discord.py automatically
+        ctx (commands.Context): Invocation context, passed by discord.py automatically
         name (Union[discord.Member, str]): The name or mention of the person the quote belongs to
         quote (str): The quote to add
     """
@@ -76,11 +81,11 @@ async def add_quote(ctx, name: Union[discord.Member, str], *, quote: str):
     await ctx.send("Added quote to stack")
 
 @salep.command()
-async def quote(ctx, name: Union[discord.Member, str]):
+async def quote(ctx: commands.Context, name: Union[discord.Member, str]):
     """Picks and posts a quote belonging to the specific person and guild at random from the database
 
     Args:
-        ctx (discord.Context): Invocation context, passed by discord.py automatically
+        ctx (commands.Context): Invocation context, passed by discord.py automatically
         name (Union[discord.Member, str]): The name or mention of the person to pick a quote from
     """
 
@@ -90,6 +95,42 @@ async def quote(ctx, name: Union[discord.Member, str]):
         return
 
     await ctx.send(choice(person["quotes"]))
+
+@salep.command()
+async def capture_quote(ctx: commands.Context):
+    """Captures the message that was replied to and stores it as a quote
+
+    Args:
+        ctx (commands.Context): Invocation context, passed automatically
+    """
+
+    target_msg = await ctx.fetch_message(ctx.message.reference.message_id)
+    await add_quote(ctx, target_msg.author, target_msg.clean_content)
+
+@salep.command()
+@commands.has_permissions(manage_messages=True)
+async def rm_quote(ctx: commands.Context, name: Union[discord.Member, str], *, query: str):
+    """Remove any quote containing the specified word(s)
+
+    Args:
+        ctx (commands.Context): Invocation context, passed automatically
+        name (Union[discord.Member, str]): Name or mention of the person the quote belongs to
+        query (str): The word(s) to look for
+    """
+
+    person = db.people.find_one({"name": extract_id(name), "guild": ctx.guild.id})
+    if person is None:
+        await ctx.send("This person does not exist!")
+        return
+    
+    rm_count = 0
+    for quote in person["quotes"]:
+        if query in quote:
+            person["quotes"].remove(quote)
+            rm_count += 1
+    
+    db.people.replace_one({"name": extract_id(name), "guild": ctx.guild.id}, person)
+    await ctx.send("Removed {0} entries from {1}".format(rm_count, name if type(name) == str else name.mention))
 
 
 if __name__ == "__main__":
@@ -102,6 +143,11 @@ if __name__ == "__main__":
         token = f.readline().strip()
         API_KEY = f.readline().strip()
 
+    # Write PID to file for easy killing
+    with open(".pid", "w") as f:
+        f.write(str(os.getpid()))
+
+    logging.info("PID: {0}".format(os.getpid()))
 
     salep.run(token)
 

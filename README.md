@@ -18,7 +18,7 @@ echo "YOUR-CURRENCY-API-KEY-HERE" >> TOKEN # *MAKE SURE TO ADD IT IN .gitignore 
 python3 salep.py # Test the bot, when you are done hit Ctrl-C
 ```
 
-For subsequent runs, you can run the `launch.sh` from inside the project root
+For subsequent runs, you can run the `launch.sh` from inside the project root and type `kill $(cat .pid)` to kill the bot
 
 ## Invocation
 
@@ -27,8 +27,10 @@ Below are the commands that are suported by Salep
 Command | Arguments | Description | Example
 ---- | ----- | ---- | ----
 s!döviz | name or three letter code for the currency | Reports the current exchange rate between a user-specified currency and the Turkish Lira | `s!döviz dolar` or `s!döviz usd`
-s!add_quote | name or @mention of the person the quote belongs to, followed by the quote enclosed in quotation marks | Adds a quote to the corresponding entry for the mentioned person and creates said entry if the person doesn't exist | `s!add_quote @torvalds "Talk is cheap, show me the code."` or `s!add_quote wall "Most of you are familiar with the virtues of a programmer. There are three, of course: laziness, impatience, and hubris."`
+s!add_quote | name or @mention of the person the quote belongs to, followed by the quote | Adds a quote to the corresponding entry for the mentioned person and creates said entry if the person doesn't exist | `s!add_quote @torvalds Talk is cheap, show me the code.` or `s!add_quote wall Most of you are familiar with the virtues of a programmer. There are three, of course: laziness, impatience, and hubris.`
 s!quote | name or @mention of the person to pick a quote from | Picks and posts a quote belonging to the specific person and guild at random from the database | `s!quote @torvalds` or `s!quote wall`
+s!capture_quote | N/A | Captures the message that was replied to and stores it as a quote | N/A
+s!rm_quote | name or @mention, followed by a unique part of the quote to be removed | Remove any quote containing the specified word(s) *This command can only be called by members that are permitted to manage messages* | `s!rm_quote wall virtues`
 
 ## Invites
 
