@@ -1,5 +1,4 @@
 # Exchange rate functions
-from operator import add
 import doviz_api
 # Discord API
 import discord
