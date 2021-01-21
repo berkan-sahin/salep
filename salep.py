@@ -48,7 +48,7 @@ def extract_id(name: Union[discord.Member, str]):
     """
     A helper function for storing and querying Members in the database
     """
-    return name.lower if type(name) == str else name.id
+    return name.lower() if type(name) == str else name.id
 
 @salep.command()
 async def add_quote(ctx, name: Union[discord.Member, str], *, quote: str):
