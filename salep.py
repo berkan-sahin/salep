@@ -1,12 +1,17 @@
 import doviz_api
 import discord
 from discord.ext import commands
+from pymongo import MongoClient  
+from typing import Union
 import logging
+from random import choice
 
 API_KEY = ""
 
 salep = commands.Bot(command_prefix="s!")
 
+client = MongoClient()
+db = client.salep
 
 @salep.event
 async def on_ready():
@@ -26,16 +31,41 @@ async def döviz(ctx, currency: str):
     
     await ctx.send(f"1 {currency_abbr} = {exchange_rate} {doviz_api.base_currency}")
 
-if __name__ == "__main__":
-    token_file = open("TOKEN", "r")
+@salep.command()
+async def add_quote(ctx, name: Union[discord.Member, str], quote: str):
+    if db.people.find_one({"name": name, "guild": ctx.guild}) is None:
+        person = {
+            "name": name,
+            "guild": ctx.guild,
+            "quotes": [quote]
+        }
 
+        db.people.insert_one(person)
+        await ctx.send("Created stack for {0} and added quote".format(name if type(name) == str else name.mention))
+        return
+
+    db.people.update_one({"name": name, "guild": ctx.guild}, {"$addToSet": {"quotes": quote}})
+    await ctx.send("Added quote to stack")
+
+@salep.command()
+async def quote(ctx, name: Union[discord.Member, str]):
+    person = db.people.find_one({"name": name, "guild": ctx.guild})
+    if person is None:
+        await ctx.send("This person does not exist")
+        return
+
+    await ctx.send(choice(person["quotes"]))
+
+
+if __name__ == "__main__":
     logging.basicConfig(filename="salep.log", level=logging.INFO,
                         format="%(asctime)s %(levelname)-8s %(message)s",
                         datefmt="%Y-%m-%d %H:%M:%S")
 
-    token = token_file.readline().strip()
-    API_KEY = token_file.readline().strip()
-    token_file.close()
+    with open("TOKEN", "r") as f:
+        token = f.readline().strip()
+        API_KEY = f.readline().strip()
+
 
     salep.run(token)
 
