@@ -31,11 +31,14 @@ async def döviz(ctx, currency: str):
     
     await ctx.send(f"1 {currency_abbr} = {exchange_rate} {doviz_api.base_currency}")
 
+def extract_id(name: Union[discord.Member, str]):
+    return name if type(name) == str else name.id
+
 @salep.command()
 async def add_quote(ctx, name: Union[discord.Member, str], quote: str):
-    if db.people.find_one({"name": name, "guild": ctx.guild.id}) is None:
+    if db.people.find_one({"name": extract_id(name), "guild": ctx.guild.id}) is None:
         person = {
-            "name": name,
+            "name": extract_id(name),
             "guild": ctx.guild.id,
             "quotes": [quote]
         }
@@ -44,12 +47,12 @@ async def add_quote(ctx, name: Union[discord.Member, str], quote: str):
         await ctx.send("Created stack for {0} and added quote".format(name if type(name) == str else name.mention))
         return
 
-    db.people.update_one({"name": name, "guild": ctx.guild.id}, {"$addToSet": {"quotes": quote}})
+    db.people.update_one({"name": extract_id(name), "guild": ctx.guild.id}, {"$addToSet": {"quotes": quote}})
     await ctx.send("Added quote to stack")
 
 @salep.command()
 async def quote(ctx, name: Union[discord.Member, str]):
-    person = db.people.find_one({"name": name, "guild": ctx.guild.id})
+    person = db.people.find_one({"name": extract_id(name), "guild": ctx.guild.id})
     if person is None:
         await ctx.send("This person does not exist")
         return
