@@ -36,4 +36,4 @@ Since the bot is WIP, I don't publicly distribute invites yet. If you wish to te
 
 ## Documentation
 
-More detailed documentation can be found at the [Salep webpage](https://bsahin.xyz/proj/salep).
+More detailed documentation can be found at the [Salep webpage](https://bsahin.xyz/proj/salep/index.html#documentation).
