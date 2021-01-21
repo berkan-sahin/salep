@@ -10,6 +10,7 @@ from pymongo import MongoClient
 from typing import Union
 import logging
 from random import choice
+import os
 
 # This is the API key for the exchange rate service
 # It will be read from the TOKEN file
@@ -139,6 +140,11 @@ if __name__ == "__main__":
         token = f.readline().strip()
         API_KEY = f.readline().strip()
 
+    # Write PID to file for easy killing
+    with open(".pid", "w") as f:
+        f.write(str(os.getpid()))
+
+    logging.info("PID: {0}".format(os.getpid()))
 
     salep.run(token)
 
