@@ -29,6 +29,10 @@ async def on_ready():
     logging.info(salep.user.id)
     logging.info('------')
 
+    # Add presence
+    webpage = discord.Game("https://bsahin.xyz/proj/salep/")
+    await salep.change_presence(activity=webpage)
+
 @salep.command()
 async def döviz(ctx: commands.Context, currency: str):
     """Reports the current exchange rate between a user-specified currency and the Turkish Lira
