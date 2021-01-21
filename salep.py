@@ -1,4 +1,5 @@
 # Exchange rate functions
+from operator import add
 import doviz_api
 # Discord API
 import discord
@@ -91,6 +92,16 @@ async def quote(ctx, name: Union[discord.Member, str]):
 
     await ctx.send(choice(person["quotes"]))
 
+@salep.command()
+async def capture_quote(ctx):
+    """Captures the message that was replied to and stores it as a quote
+
+    Args:
+        ctx (discord.Context): Invocation context, passed automatically
+    """
+
+    target_msg = await ctx.fetch_message(ctx.message.reference.message_id)
+    await add_quote(ctx, target_msg.author, target_msg.clean_content)
 
 if __name__ == "__main__":
     logging.basicConfig(filename="salep.log", level=logging.INFO,
