@@ -2,11 +2,13 @@
 import doviz_api
 # Discord API
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 # MongoDB
 from pymongo import MongoClient
+# for DGKO
+from datetime import date
 # Misc. imports  
-from typing import Union
+from typing import Union, Optional
 import logging
 from random import choice
 import os
@@ -15,11 +17,14 @@ import os
 # It will be read from the TOKEN file
 API_KEY = ""
 
-salep = commands.Bot(command_prefix="s!")
+# Required for DGKO functionality
+intents = discord.Intents.all()
+salep = commands.Bot(command_prefix="s!", intents=intents)
 
 # Initialize database
 client = MongoClient()
 db = client.salep
+
 
 @salep.event
 async def on_ready():
@@ -31,6 +36,7 @@ async def on_ready():
     # Add presence
     webpage = discord.Game("https://bsahin.xyz/proj/salep/")
     await salep.change_presence(activity=webpage)
+    query_bday.start()
 
 @salep.command()
 async def döviz(ctx: commands.Context, currency: str):
@@ -132,6 +138,38 @@ async def rm_quote(ctx: commands.Context, name: Union[discord.Member, str], *, q
     db.people.replace_one({"name": extract_id(name), "guild": ctx.guild.id}, person)
     await ctx.send("Removed {0} entries from {1}".format(rm_count, name if type(name) == str else name.mention))
 
+@tasks.loop(hours=24)
+async def query_bday():
+    for guild in salep.guilds:
+        for bday_child in db.people.find({"guild": guild.id, "bday-month": date.today().month, "bday-day": date.today().day}):
+            member = guild.get_member(bday_child["name"])
+            await guild.system_channel.send("Happy birthday {0}!".format(member.mention))
+
+@salep.command()
+async def dgko(ctx: commands.Context, bday: str):
+    """Add your birthday
+
+    Args:
+        ctx (commands.Context): Invocation context, provided automatically
+        bday (str): Your birthday, in dd/mm/yyyy or dd/mm format
+    """
+    tmp = bday.split("/")
+    
+    if db.people.find_one({"name": ctx.author.id, "guild": ctx.guild.id}) is None:
+        person = {
+            "name": ctx.author.id,
+            "guild": ctx.guild.id,
+            "bday-day" : int(tmp[0]),
+            "bday-month" : int(tmp[1])
+        }
+
+        db.people.insert_one(person)
+        await ctx.send("Created {0} and added birthday".format(ctx.author.mention))
+        return
+
+    db.people.update_one({"name": ctx.author.id, "guild": ctx.guild.id}, {"$set": {"bday-day": int(tmp[0]), "bday-month": int(tmp[1])}})
+    await ctx.send("Added birthday")
+    
 
 if __name__ == "__main__":
     logging.basicConfig(filename="salep.log", level=logging.INFO,

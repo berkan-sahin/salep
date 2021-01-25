@@ -1,6 +1,6 @@
 # Salep
 
-Salep is a chatbot for Discord whose primary purpose is to store quotes (a.k.a inciler) for various contexts and when called upon, message one of those quotes at random. It also displays exchange rate for various currencies compared with the Turkish Lira.
+Salep is a chatbot for Discord whose primary purpose is to store quotes (a.k.a inciler) for various contexts and when called upon, message one of those quotes at random. It also celebrates the birthdays of guild members and displays exchange rate for various currencies compared with the Turkish Lira.
 
 Salep is free (özgür) software licensed under GNU Affero GPL 3.0.
 ## Setup
@@ -31,6 +31,7 @@ s!add_quote | name or @mention of the person the quote belongs to, followed by t
 s!quote | name or @mention of the person to pick a quote from | Picks and posts a quote belonging to the specific person and guild at random from the database | `s!quote @torvalds` or `s!quote wall`
 s!capture_quote | N/A | Captures the message that was replied to and stores it as a quote | N/A
 s!rm_quote | name or @mention, followed by a unique part of the quote to be removed | Remove any quote containing the specified word(s) *This command can only be called by members that are permitted to manage messages* | `s!rm_quote wall virtues`
+s!dgko | your birthday in dd/mm or dd/mm/yyyy format | Saves your birthday in a database to celebrate it when the day comes | `s!dgko 03/12/2002` or `s!dgko 03/12`
 
 ## Invites
 
