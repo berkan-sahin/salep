@@ -139,7 +139,7 @@ async def rm_quote(ctx: commands.Context, name: Union[discord.Member, str], *, q
 @tasks.loop(hours=24)
 async def query_bday():
     for guild in salep.guilds:
-        for bday_child in db.people.find({"guild": guild.id, "bday-month": date.today().month, "bday-day": date.today().month}):
+        for bday_child in db.people.find({"guild": guild.id, "bday-month": date.today().month, "bday-day": date.today().day}):
             member: discord.Member = guild.get_member(bday_child["name"])
             guild.system_channel.send("Happy birthday {0}!".format(member.mention))
 
