@@ -16,6 +16,8 @@ import os
 # This is the API key for the exchange rate service
 # It will be read from the TOKEN file
 API_KEY = ""
+
+# Required for DGKO functionality
 intents = discord.Intents.all()
 salep = commands.Bot(command_prefix="s!", intents=intents)
 
@@ -149,7 +151,7 @@ async def dgko(ctx: commands.Context, bday: str):
 
     Args:
         ctx (commands.Context): Invocation context, provided automatically
-        bday (str): Your birthday, in dd/mm/yyyy format
+        bday (str): Your birthday, in dd/mm/yyyy or dd/mm format
     """
     tmp = bday.split("/")
     
