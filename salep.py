@@ -16,8 +16,8 @@ import os
 # This is the API key for the exchange rate service
 # It will be read from the TOKEN file
 API_KEY = ""
-
-salep = commands.Bot(command_prefix="s!")
+intents = discord.Intents.all()
+salep = commands.Bot(command_prefix="s!", intents=intents)
 
 # Initialize database
 client = MongoClient()
@@ -140,7 +140,7 @@ async def rm_quote(ctx: commands.Context, name: Union[discord.Member, str], *, q
 async def query_bday():
     for guild in salep.guilds:
         for bday_child in db.people.find({"guild": guild.id, "bday-month": date.today().month, "bday-day": date.today().day}):
-            member = guild.get_member(int(bday_child["name"]))
+            member = guild.get_member(bday_child["name"])
             guild.system_channel.send("Happy birthday {0}!".format(member.mention))
 
 @salep.command()
