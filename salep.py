@@ -157,15 +157,15 @@ async def dgko(ctx: commands.Context, bday: str):
         person = {
             "name": ctx.author.id,
             "guild": ctx.guild.id,
-            "bday-day" : tmp[0],
-            "bday-month" : tmp[1]
+            "bday-day" : int(tmp[0]),
+            "bday-month" : int(tmp[1])
         }
 
         db.people.insert_one(person)
         await ctx.send("Created {0} and added birthday".format(ctx.author.mention))
         return
 
-    db.people.update_one({"name": ctx.author.id, "guild": ctx.guild.id}, {"$set": {"bday-day": tmp[0], "bday-month": tmp[1]}})
+    db.people.update_one({"name": ctx.author.id, "guild": ctx.guild.id}, {"$set": {"bday-day": int(tmp[0]), "bday-month": int(tmp[1])}})
     await ctx.send("Added birthday")
     
 
