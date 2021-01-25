@@ -141,7 +141,7 @@ async def query_bday():
     for guild in salep.guilds:
         for bday_child in db.people.find({"guild": guild.id, "bday-month": date.today().month, "bday-day": date.today().day}):
             member = guild.get_member(bday_child["name"])
-            guild.system_channel.send("Happy birthday {0}!".format(member.mention))
+            await guild.system_channel.send("Happy birthday {0}!".format(member.mention))
 
 @salep.command()
 async def dgko(ctx: commands.Context, bday: str):
