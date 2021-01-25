@@ -95,7 +95,7 @@ async def quote(ctx: commands.Context, name: Union[discord.Member, str]):
         name (Union[discord.Member, str]): The name or mention of the person to pick a quote from
     """
 
-    person = db.people.find_one({"name": extract_id(name), "guild": ctx.guild.id})
+    person = db.people.find_one({"name": extract_id(name), "guild": ctx.guild.id, "quotes": {"$exists": True, "$not": {"$size": 0}}})
     if person is None:
         await ctx.send("This person does not exist")
         return
