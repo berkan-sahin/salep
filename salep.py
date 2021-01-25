@@ -56,7 +56,7 @@ def extract_id(name: Union[discord.Member, str]):
     return name.lower() if type(name) == str else name.id
 
 @salep.command()
-async def add_quote(ctx: commands.Context, name: Union[discord.Member, str], * quote: str):
+async def add_quote(ctx: commands.Context, name: Union[discord.Member, str], *, quote: str):
     """Adds a quote to the corresponding entry for the mentioned person and creates said entry
     if the person doesn't exist
 
