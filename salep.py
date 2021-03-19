@@ -182,12 +182,12 @@ if __name__ == "__main__":
                         datefmt="%Y-%m-%d %H:%M:%S")
 
     # Read exchange API key and bot token from the TOKEN file.
-    with open("TOKEN", "r") as f:
+    with open("/opt/salep/TOKEN", "r") as f:
         token = f.readline().strip()
         API_KEY = f.readline().strip()
 
     # Write PID to file for easy killing
-    with open(".pid", "w") as f:
+    with open("/opt/salep/.pid", "w") as f:
         f.write(str(os.getpid()))
 
     logging.info("PID: {0}".format(os.getpid()))
