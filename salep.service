@@ -1,0 +1,13 @@
+[Unit]
+Description=A discord bot
+Documentation=https://github.com/berkan-sahin/salep
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/bin/bash /opt/salep/launch.sh
+Restart=always
+RestartSec=12
+
+[Install]
+WantedBy=default.target
