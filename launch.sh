@@ -1,2 +1,2 @@
 #!/bin/bash
-source .venv/bin/activate && python3 salep.py &
+source /opt/salep/.venv/bin/activate && python3 salep.py
