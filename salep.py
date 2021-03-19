@@ -12,6 +12,7 @@ from typing import Union, Optional
 import logging
 from random import choice
 import os
+import sys
 
 # This is the API key for the exchange rate service
 # It will be read from the TOKEN file
@@ -172,7 +173,11 @@ async def dgko(ctx: commands.Context, bday: str):
     
 
 if __name__ == "__main__":
-    logging.basicConfig(filename="salep.log", level=logging.INFO,
+
+    file_handler = logging.FileHandler(filename="salep.log")
+    stdout_handler = logging.StreamHandler(sys.stderr)
+    handlers = [file_handler, stdout_handler]
+    logging.basicConfig(level=logging.INFO, handlers=handlers,
                         format="%(asctime)s %(levelname)-8s %(message)s",
                         datefmt="%Y-%m-%d %H:%M:%S")
 
