@@ -7,6 +7,7 @@ After=network-online.target
 [Service]
 Type=forking
 PIDFile=/opt/salep/.pid
+ExecStartPre=-/usr/bin/rm /opt/salep/.pid
 ExecStart=/bin/bash /opt/salep/launch.sh
 Restart=always
 RestartSec=12
