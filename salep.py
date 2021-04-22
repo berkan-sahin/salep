@@ -48,6 +48,10 @@ async def döviz(ctx: commands.Context, currency: str):
         currency (str): The name or the three-letter code for the desired currency
     """    
 
+    if currency.capitalize == "Allah" :
+        await ctx.send("Not funny, didn't laugh")
+        return
+
     try:
         exchange_rate, currency_abbr = doviz_api.get_exchange_rate(currency, API_KEY)
     except doviz_api.InvalidCurrencyError:
